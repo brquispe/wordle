@@ -3,27 +3,37 @@ export class Timer {
   /** @type {HTMLElement} */
   element
 
+  beepSound = new Audio('../../sounds/beep.wav')
+  #percentageWarning = 50
+  #percentageDanger = 25
+
   constructor () {
     this.element = document.createElement('div')
     this.element.classList.add('timer')
+    this.beepSound.playbackRate = 3
   }
 
   /** @param {number} seconds */
   startCountdown (seconds) {
+    this.beepSound.pause()
     const intervalRate = Timer.convertSecondsToMS(1)
     const startTime = Timer.convertSecondsToMS(seconds)
     let time = startTime
+    const calculatePercentage = (number, percentage) => {
+      return number * percentage / 100
+    }
     const interval = setInterval(() => {
       time -= intervalRate
       if (time <= 0) {
         clearInterval(interval)
       }
       this.element.innerText = this.convertTimeToMMSS(time)
-      if (time < startTime * 0.6 && time > startTime * 0.3) {
+      if (time < calculatePercentage(startTime, this.#percentageWarning) && time > calculatePercentage(startTime, this.#percentageDanger)) {
         this.element.classList.toggle('warning', true)
-      } else if (time < startTime * 0.3) {
+      } else if (time < calculatePercentage(startTime, this.#percentageDanger)) {
         this.element.classList.remove('warning')
         this.element.classList.toggle('danger', true)
+        this.beepSound.play()
       }
     }, intervalRate)
     console.log(interval)
