@@ -16,6 +16,10 @@ export class WordRepository {
     return this.#words.some(w => this.#normalizeWord(w) === normalizedWord)
   }
 
+  getRandomWord () {
+    return this.#words[Math.floor(Math.random() * this.#words.length)]
+  }
+
   async loadWords () {
     return fetch('./data/words.json').then(data => data.json())
       .then(words => {
