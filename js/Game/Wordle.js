@@ -54,7 +54,6 @@ export class Wordle {
     // this.elem = document.createElement('div')
     this.timer = new Timer()
     this.timer.startCountdown(15)
-    this.elem.appendChild(this.timer.element)
     const btnShowHowToPlay = document.createElement('button')
     btnShowHowToPlay.type = 'button'
     btnShowHowToPlay.title = 'Mostrar cómo jugar'
@@ -62,6 +61,7 @@ export class Wordle {
     btnShowHowToPlay.addEventListener('click', this.showHowToPlay.bind(this))
     btnShowHowToPlay.classList.add('btnShowHowToPlay')
     this.elem.appendChild(btnShowHowToPlay)
+    this.elem.appendChild(this.timer.element)
     const wordleWrapper = document.createElement('div')
     wordleWrapper.classList.add('wordle')
     this.gameboard.repository.loadWords().then(() => {
