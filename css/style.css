@@ -6,6 +6,11 @@
   --color-background: #38DBFF;
 }
 
+html, main {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   background-color: var(--color-background);
   font-family: 'Poppins';
@@ -107,12 +112,25 @@ fieldset.word {
   font-size: 1.2rem;
 }
 
+body {
+  height: 100%;
+}
+
+main {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  height: 100%;
+}
+
 .container {
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  /* width: 100%; */
+  margin: auto;
 }
 
 .info {
@@ -155,4 +173,20 @@ button.btnShowHowToPlay {
   font-size: 1.25rem;
   width: 32px;
   height: 32px;
+}
+
+.frmPlayerName {
+  margin: auto;
+}
+
+.timer {
+  color: var(--color-black)
+}
+
+.timer.warning {
+  color: var(--color-included);
+}
+
+.timer.danger {
+  color: #FF160C;
 }

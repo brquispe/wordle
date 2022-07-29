@@ -4,22 +4,28 @@
 import { Key } from '../Keyboard/Key.js'
 import { Keyboard } from '../Keyboard/Keyboard.js'
 import { Gameboard, GameStatus } from './Gameboard.js'
+import { Timer } from './Timer.js'
 import { Word } from './Word.js'
 
-const GameUIStatus = Object.freeze({
-  PLAYING: 0,
-  HOWTOPLAYMENU: 1
+export const GameUIStatus = Object.freeze({
+  LOBBY: 0,
+  PLAYING: 1,
+  HOWTOPLAYMENU: 2
 })
 
 export class Wordle {
-  status = GameUIStatus.PLAYING
+  status = GameUIStatus.LOBBY
   gameboard
   /** @type {Keyboard} */
   keyboard
+  playerName = ''
   currentLetter = {
     wordNumber: 0,
     letterNumber: 0
   }
+
+  /** @type {Timer} */
+  timer
 
   /** @type {HTMLDivElement} */
   elem
@@ -38,12 +44,17 @@ export class Wordle {
     })
     this.gameboard = new Gameboard(new Word(word))
     // this.currentLetter.wordNumber = this.gameboard.round - 1
-    this.initializeElement()
+    // this.initializeElement()
+    this.elem = document.createElement('div')
+    this.elem.id = 'wordleContainer'
+    this.elem.classList.add('container')
   }
 
   initializeElement () {
-    this.elem = document.createElement('div')
-    this.elem.classList.add('container')
+    // this.elem = document.createElement('div')
+    this.timer = new Timer()
+    this.timer.startCountdown(15)
+    this.elem.appendChild(this.timer.element)
     const btnShowHowToPlay = document.createElement('button')
     btnShowHowToPlay.type = 'button'
     btnShowHowToPlay.title = 'Mostrar cómo jugar'
@@ -100,7 +111,7 @@ export class Wordle {
    */
   onPressKey (key) {
     // console.log(this.currentLetter)
-    if (this.status === GameUIStatus.HOWTOPLAYMENU || this.gameboard.status === GameStatus.VICTORY) {
+    if (this.status !== GameUIStatus.PLAYING || this.gameboard.status === GameStatus.VICTORY) {
       return
     }
     const currentLetterInput = this.wordInputs[this.currentLetter.wordNumber].letters[this.currentLetter.letterNumber]
@@ -127,6 +138,29 @@ export class Wordle {
         this.currentLetter.letterNumber++
         break
     }
+  }
+
+  startGame () {
+    console.log('START!')
+    const nameInput = document.createElement('div')
+    const formName = document.createElement('form')
+    nameInput.appendChild(formName)
+    formName.innerHTML = `
+      <label for="name">Nombre</label>
+      <input type="text" name="name" id="name" />
+      <button class="key enter" type="submit" title="Empezar">Empezar</button>`
+    this.elem.classList.add('wordle', 'frmPlayerName')
+    formName.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const formData = new FormData(formName)
+      const name = formData.get('name')
+      alert(`Bienvenido, ${name}`)
+      this.playerName = name?.toString() || ''
+      this.status = GameUIStatus.PLAYING
+      this.elem.removeChild(nameInput)
+      this.initializeElement()
+    })
+    this.elem.appendChild(nameInput)
   }
 
   showHowToPlay () {
